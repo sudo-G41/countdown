@@ -147,14 +147,15 @@
             },
             step: function(state, circle, attachment) {
                 var remained = Math.floor(duration*(1-circle.value())/1000);
-                var m = Math.floor(remained/60);
+                var h = Math.floor(remained/3600);
+                var m = (Math.floor(remained/60))%60;
                 var s = remained%60;
-                if(!bgChanged && m === 0){
+                if(!bgChanged && (h === 0 && m === 0)){
                     bgChanged = true;
                     document.querySelector('body').style.backgroundImage = "url('https://source.unsplash.com/1600x900/?code')";
                     document.querySelector('body').style.backgroundSize = "cover";
                 }
-                if(!hurryupFlag && (m === 0 && s < 30)){
+                if(!hurryupFlag && (h === 0 && m === 0 && s < 30)){
                     document.querySelector('#container').classList.add('animated');
                     document.querySelector('#container').classList.add('infinite');
                     document.querySelector('#container').classList.add('flip');
@@ -171,7 +172,10 @@
                     document.querySelector('.githubinfo').style.display = 'block';
                 }
 
-                if (m === 0){
+                if(h>0){
+                    destElem = '<div class="dest">'+dest+'</div>';
+                    circle.setText(destElem+h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'));
+                } else if (m === 0){
                     //display timer
                     circle.setText(s);
 
@@ -181,7 +185,7 @@
                     }
                 } else {
                     destElem = '<div class="dest">'+dest+'</div>';
-                    circle.setText(destElem+m+':'+s);
+                    circle.setText(destElem+m+':'+String(s).padStart(2,'0'));
                 }
             }
         });
